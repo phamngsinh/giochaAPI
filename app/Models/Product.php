@@ -10,7 +10,7 @@ class Product extends Model
     protected $fillable = ['name','price','description','creator'];
 
     public function user(){
-        $this->belongsTo('App\User','creator','id');
+        $this->belongsTo('App\Models\User','creator','id');
     }
 
 }
