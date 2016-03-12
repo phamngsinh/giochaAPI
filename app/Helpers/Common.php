@@ -16,11 +16,12 @@ if (! function_exists ( 'toArrayCamel' )) {
 }
 if (! function_exists ( 'makeResponse' )) {
 
-    function makeResponse($result, $message, $status = false, $is_api = false)
+    function makeResponse($result, $message,$code = \Illuminate\Http\Response::HTTP_OK, $status = true, $is_api = false)
     {
         $rs = [
             'success' => $status,
             'message' => $message,
+            'code' => $code,
         ];
         if (\Illuminate\Support\Facades\Input::get('limit', 0) == 0) {
             $rs['data'] = $result;

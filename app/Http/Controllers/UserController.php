@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Repository\UserRepository;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -11,6 +12,12 @@ use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
+    protected $user;
+    public function __construct(UserRepository  $userRepository)
+    {
+        $this->user = $userRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,8 +25,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        return makeResponse($users,trans('messages.user_get'),Response::HTTP_OK);
+        return makeResponse($this->user->all(),trans('messages.user_get'),Response::HTTP_OK);
     }
 
     /**
@@ -29,7 +35,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -40,7 +46,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user  = $this->user->create($request->all());
+        return makeResponse($user->toArray(),trans('messages.create_data'),Response::HTTP_OK);
     }
 
     /**
@@ -51,7 +58,8 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = $this->user->find($id);
+        return makeResponse($user->toArray(),trans('messages.get_data'),Response::HTTP_OK);
     }
 
     /**
@@ -74,7 +82,8 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user  = $this->user->updateRich($request->all(),$id);
+        return makeResponse($user->toArray(),trans('messages.update_data'),Response::HTTP_OK);
     }
 
     /**
@@ -85,6 +94,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user  = $this->user->delete($id);
+        return makeResponse($user->toArray(),trans('messages.delete_data'),Response::HTTP_OK);
     }
 }

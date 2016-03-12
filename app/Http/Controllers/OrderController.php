@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Repository\OrderRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
 
 class OrderController extends Controller
 {
+    protected $order;
+    public function __construct(OrderRepository  $orderRepository)
+    {
+        $this->order = $orderRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +24,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        return makeResponse($this->order->all(),trans('messages.order_get'),Response::HTTP_OK);
     }
 
     /**
@@ -26,7 +34,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -37,7 +45,8 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $order  = $this->order->create($request->all());
+        return makeResponse($order->toArray(),trans('messages.create_data'),Response::HTTP_OK);
     }
 
     /**
@@ -48,7 +57,8 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
+        $order = $this->order->find($id);
+        return makeResponse($order->toArray(),trans('messages.get_data'),Response::HTTP_OK);
     }
 
     /**
@@ -71,7 +81,8 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $order  = $this->order->updateRich($request->all(),$id);
+        return makeResponse($order->toArray(),trans('messages.update_data'),Response::HTTP_OK);
     }
 
     /**
@@ -82,6 +93,7 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $order  = $this->order->delete($id);
+        return makeResponse($order->toArray(),trans('messages.delete_data'),Response::HTTP_OK);
     }
 }
