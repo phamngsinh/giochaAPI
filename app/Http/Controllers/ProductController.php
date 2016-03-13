@@ -9,7 +9,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 
-class UserController extends Controller
+class ProductController extends Controller
 {
     protected $product;
     public function __construct(ProductRepository  $productRepository)
@@ -43,7 +43,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Requests\ProductRequest $request)
     {
         $product  = $this->product->create($request->all());
         return makeResponse($product->toArray(),trans('messages.create_data'),Response::HTTP_OK);

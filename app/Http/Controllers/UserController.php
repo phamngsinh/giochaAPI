@@ -44,8 +44,9 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Requests\UserRequest $request)
     {
+
         $user  = $this->user->create($request->all());
         return makeResponse($user->toArray(),trans('messages.create_data'),Response::HTTP_OK);
     }

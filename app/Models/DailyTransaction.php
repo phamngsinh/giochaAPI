@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DailyTransaction extends Model
 {
+    protected $dateFormat = "U";
     protected $table = "daily_transactions";
     protected $fillable = ['transaction_time'];
     protected $hidden = [];

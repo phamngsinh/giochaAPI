@@ -31,6 +31,6 @@ if (! function_exists ( 'makeResponse' )) {
             $rs['data'] = $result;
         }
 
-        return response()->json(toArrayCamel($rs));
+        return response()->json($rs);
     }
 }
