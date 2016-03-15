@@ -12,7 +12,7 @@ class CreateDailyTransactionsProductsTable extends Migration
      */
     public function up()
     {
-
+        DB::statement('set foreign_key_checks=0');
         Schema::create('daily_transactions_products', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('product_id')->unsigned();
@@ -21,6 +21,7 @@ class CreateDailyTransactionsProductsTable extends Migration
             $table->foreign('daily_transaction_id')->references('id')->on('daily_transactions');
             $table->timestamps();
         });
+        DB::statement('set foreign_key_checks=1');
 
     }
 

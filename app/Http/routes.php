@@ -10,17 +10,17 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
 Route::get('/', function () {
     return view('welcome');
 });
-Route::group(['prefix' => 'api'], function()
+
+Route::group(['prefix' => 'api','middleware' => 'cors'], function()
 {
     Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);
     Route::post('authenticate', 'AuthenticateController@authenticate');
 
 });
-Route::group(['prefix'=>'api', 'before' => 'jwt-auth', 'after' => 'jwt.refresh'],function(){
+Route::group(['prefix'=>'api', 'before' => 'jwt-auth', 'after' => 'jwt.refresh','middleware' => 'cors'],function(){
     Route::resource('user', 'UserController');
     Route::resource('product', 'ProductController');
     Route::resource('order', 'OrderController');
