@@ -24,6 +24,7 @@ class CreateProductsTable extends Migration
             $table->integer('created_at');
             $table->integer('updated_at');
         });
+        \Illuminate\Support\Facades\DB::statement('set foreign_key_checks=1');
 
         \Illuminate\Support\Facades\DB::statement('set foreign_key_checks=1');
 

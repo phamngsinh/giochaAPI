@@ -23,7 +23,6 @@ class CreateDailyTransactionsProductsTable extends Migration
             $table->integer('updated_at');
         });
         \Illuminate\Support\Facades\DB::statement('set foreign_key_checks=1');
-
     }
 
     /**
