@@ -21,8 +21,8 @@ Route::group(['prefix' => 'api'], function()
 
 });
 Route::group(['prefix'=>'api', 'before' => 'jwt-auth', 'after' => 'jwt.refresh'],function(){
-    Route::resource('user', 'UserController');
-    Route::resource('product', 'ProductController');
-    Route::resource('order', 'OrderController');
-    Route::resource('dailytransaction', 'DailyTransactionController');
+    Route::resource('users', 'UsersController');
+    Route::resource('products', 'ProductsController');
+    Route::resource('orders', 'OrdersController');
+    Route::resource('dailytransactions', 'DailyTransactionsController');
 });

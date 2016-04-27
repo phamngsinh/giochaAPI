@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Repository\OrderRepository;
+use App\Models\Product;
+use App\Repository\ProductRepository;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\ProductRequest;
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 
-class OrderController extends Controller
+class ProductsController extends BaseController
 {
-    protected $order;
-    public function __construct(OrderRepository  $orderRepository)
+    protected $product;
+    public function __construct(ProductRepository  $productRepository)
     {
-        $this->order = $orderRepository;
+        $this->product = $productRepository;
+        $this->middleware('jwt.auth', ['except' => []]);
     }
 
     /**
@@ -24,7 +25,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return makeResponse($this->order->all(),trans('messages.order_get'),Response::HTTP_OK);
+        return makeResponse($this->product->all(),trans('messages.get_data'),Response::HTTP_OK);
     }
 
     /**
@@ -43,10 +44,12 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        $order  = $this->order->create($request->all());
-        return makeResponse($order->toArray(),trans('messages.create_data'),Response::HTTP_OK);
+
+
+        $product  = $this->product->create($request->all());
+        return makeResponse($product->toArray(),trans('messages.create_data'),Response::HTTP_OK);
     }
 
     /**
@@ -57,8 +60,8 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $order = $this->order->find($id);
-        return makeResponse($order->toArray(),trans('messages.get_data'),Response::HTTP_OK);
+        $product = $this->product->find($id);
+        return makeResponse($product->toArray(),trans('messages.get_data'),Response::HTTP_OK);
     }
 
     /**
@@ -81,8 +84,18 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $order  = $this->order->updateRich($request->all(),$id);
-        return makeResponse($order->toArray(),trans('messages.update_data'),Response::HTTP_OK);
+
+        if (sizeof(Product::$rules) > 0)
+            $this->validateRequestOrFail($request, Product::$rules, Product::$messages);
+
+        $product = $this->product->apiFindOrFail($id);
+
+        $product  = $this->product->updateRich($request->all(),$id);
+        if($product){
+            $product = $this->product->apiFindOrFail($id);
+        }
+
+        return makeResponse($product->toArray(),trans('messages.update_data'),Response::HTTP_OK);
     }
 
     /**
@@ -93,7 +106,7 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        $order  = $this->order->delete($id);
-        return makeResponse($order->toArray(),trans('messages.delete_data'),Response::HTTP_OK);
+        $product  = $this->product->delete($id);
+        return makeResponse($product->toArray(),trans('messages.delete_data'),Response::HTTP_OK);
     }
 }

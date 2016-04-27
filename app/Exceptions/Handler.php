@@ -9,7 +9,7 @@ use League\Flysystem\NotSupportedException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-
+use Log;
 class Handler extends ExceptionHandler
 {
     /**
@@ -18,8 +18,8 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        HttpException::class,
-        ModelNotFoundException::class,
+       // HttpException::class,
+       // ModelNotFoundException::class,
     ];
 
     /**
@@ -44,6 +44,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        Log::info($e->getMessage());
         /* if ($e instanceof ModelNotFoundException) {
              $e = new NotFoundHttpException($e->getMessage(), $e);
          }*/
@@ -60,6 +61,7 @@ class Handler extends ExceptionHandler
             $message = trans('messages.common_data_not_found');
         } elseif ($e instanceof \PDOException) {
             $code = Response::HTTP_SERVICE_UNAVAILABLE;
+
             $message = trans('messages.database_error');
         }
         $rs = [
@@ -68,6 +70,7 @@ class Handler extends ExceptionHandler
             'message' => $message,
             'data' => $request->all(),
         ];
+
         return response()->json($rs);
         // return parent::render($request, $e);
     }
