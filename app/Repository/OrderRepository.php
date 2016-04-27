@@ -4,7 +4,7 @@ namespace App\Repository;
 use Bosnadev\Repositories\Eloquent\Repository;
 use Bosnadev\Repositories\Contracts\RepositoryInterface;
 
-class OrderRepository extends Repository
+class OrderRepository extends BaseRepository
 {
 
 

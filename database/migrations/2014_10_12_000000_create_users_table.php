@@ -20,7 +20,8 @@ class CreateUsersTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->rememberToken();
-            $table->timestamps();
+            $table->integer('created_at');
+            $table->integer('updated_at');
         });
     }
 

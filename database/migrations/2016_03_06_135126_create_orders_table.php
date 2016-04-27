@@ -12,8 +12,7 @@ class CreateOrdersTable extends Migration
      */
     public function up()
     {
-        DB::statement('set foreign_key_checks=0');
-
+        \Illuminate\Support\Facades\DB::statement('set foreign_key_checks=0');
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->text('note');
@@ -22,9 +21,10 @@ class CreateOrdersTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('daily_transaction_product_id')->unsigned();
             $table->foreign('daily_transaction_product_id')->references('id')->on('daily_transactions_products');
-            $table->timestamps();
+            $table->integer('created_at');
+            $table->integer('updated_at');
         });
-        DB::statement('set foreign_key_checks=1');
+        \Illuminate\Support\Facades\DB::statement('set foreign_key_checks=1');
 
     }
 

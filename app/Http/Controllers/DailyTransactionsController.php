@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Repository\UserRepository;
-use App\Models\User;
+use App\Repository\DailyTransactionRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 
-class UserController extends Controller
+class DailyTransactionsController extends BaseController
 {
-    protected $user;
-    public function __construct(UserRepository  $userRepository)
+    protected $dailyTransactionRepository;
+    public function __construct(DailyTransactionRepository  $dailyTransactionRepositoryRepository)
     {
-        $this->user = $userRepository;
+        $this->dailyTransactionRepository = $dailyTransactionRepositoryRepository;
+//        $this->middleware('jwt.auth', ['except' => []]);
     }
 
     /**
@@ -25,7 +25,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return makeResponse($this->user->all(),trans('messages.user_get'),Response::HTTP_OK);
+        return makeResponse($this->dailyTransactionRepository->all(),trans('messages.dailyTransactionRepository_get'),Response::HTTP_OK);
     }
 
     /**
@@ -44,11 +44,10 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Requests\UserRequest $request)
+    public function store(Request $request)
     {
-
-        $user  = $this->user->create($request->all());
-        return makeResponse($user->toArray(),trans('messages.create_data'),Response::HTTP_OK);
+        $dailyTransactionRepository  = $this->dailyTransactionRepository->create($request->all());
+        return makeResponse($dailyTransactionRepository->toArray(),trans('messages.create_data'),Response::HTTP_OK);
     }
 
     /**
@@ -59,8 +58,8 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = $this->user->find($id);
-        return makeResponse($user->toArray(),trans('messages.get_data'),Response::HTTP_OK);
+        $dailyTransactionRepository = $this->dailyTransactionRepository->find($id);
+        return makeResponse($dailyTransactionRepository->toArray(),trans('messages.get_data'),Response::HTTP_OK);
     }
 
     /**
@@ -83,8 +82,8 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user  = $this->user->updateRich($request->all(),$id);
-        return makeResponse($user->toArray(),trans('messages.update_data'),Response::HTTP_OK);
+        $dailyTransactionRepository  = $this->dailyTransactionRepository->updateRich($request->all(),$id);
+        return makeResponse($dailyTransactionRepository->toArray(),trans('messages.update_data'),Response::HTTP_OK);
     }
 
     /**
@@ -95,7 +94,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user  = $this->user->delete($id);
-        return makeResponse($user->toArray(),trans('messages.delete_data'),Response::HTTP_OK);
+        $dailyTransactionRepository  = $this->dailyTransactionRepository->delete($id);
+        return makeResponse($dailyTransactionRepository->toArray(),trans('messages.delete_data'),Response::HTTP_OK);
     }
 }

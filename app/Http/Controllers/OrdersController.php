@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Repository\ProductRepository;
+use App\Repository\OrderRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 
-class ProductController extends Controller
+class OrdersController extends BaseController
 {
-    protected $product;
-    public function __construct(ProductRepository  $productRepository)
+    protected $order;
+    public function __construct(OrderRepository  $orderRepository)
     {
-        $this->product = $productRepository;
+        $this->order = $orderRepository;
+//        $this->middleware('jwt.auth', ['except' => []]);
     }
 
     /**
@@ -24,7 +25,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return makeResponse($this->product->all(),trans('messages.product_get'),Response::HTTP_OK);
+        return makeResponse($this->order->all(),trans('messages.order_get'),Response::HTTP_OK);
     }
 
     /**
@@ -43,10 +44,10 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Requests\ProductRequest $request)
+    public function store(Request $request)
     {
-        $product  = $this->product->create($request->all());
-        return makeResponse($product->toArray(),trans('messages.create_data'),Response::HTTP_OK);
+        $order  = $this->order->create($request->all());
+        return makeResponse($order->toArray(),trans('messages.create_data'),Response::HTTP_OK);
     }
 
     /**
@@ -57,8 +58,8 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = $this->product->find($id);
-        return makeResponse($product->toArray(),trans('messages.get_data'),Response::HTTP_OK);
+        $order = $this->order->find($id);
+        return makeResponse($order->toArray(),trans('messages.get_data'),Response::HTTP_OK);
     }
 
     /**
@@ -81,8 +82,8 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $product  = $this->product->updateRich($request->all(),$id);
-        return makeResponse($product->toArray(),trans('messages.update_data'),Response::HTTP_OK);
+        $order  = $this->order->updateRich($request->all(),$id);
+        return makeResponse($order->toArray(),trans('messages.update_data'),Response::HTTP_OK);
     }
 
     /**
@@ -93,7 +94,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product  = $this->product->delete($id);
-        return makeResponse($product->toArray(),trans('messages.delete_data'),Response::HTTP_OK);
+        $order  = $this->order->delete($id);
+        return makeResponse($order->toArray(),trans('messages.delete_data'),Response::HTTP_OK);
     }
 }

@@ -20,9 +20,10 @@ Route::group(['prefix' => 'api','middleware' => 'cors'], function()
     Route::post('authenticate', 'AuthenticateController@authenticate');
 
 });
-Route::group(['prefix'=>'api', 'before' => 'jwt-auth', 'after' => 'jwt.refresh','middleware' => 'cors'],function(){
-    Route::resource('user', 'UserController');
-    Route::resource('product', 'ProductController');
-    Route::resource('order', 'OrderController');
-    Route::resource('dailytransaction', 'DailyTransactionController');
+
+Route::group(['prefix'=>'api', 'before' => 'jwt-auth', 'after' => 'jwt.refresh'],function(){
+    Route::resource('users', 'UsersController');
+    Route::resource('products', 'ProductsController');
+    Route::resource('orders', 'OrdersController');
+    Route::resource('dailytransactions', 'DailyTransactionsController');
 });
