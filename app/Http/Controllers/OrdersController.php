@@ -15,7 +15,7 @@ class OrdersController extends BaseController
     public function __construct(OrderRepository  $orderRepository)
     {
         $this->order = $orderRepository;
-//        $this->middleware('jwt.auth', ['except' => []]);
+        $this->middleware('jwt.auth', ['except' => []]);
     }
 
     /**

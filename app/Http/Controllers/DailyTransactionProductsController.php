@@ -15,7 +15,7 @@ class DailyTransactionProductsController extends BaseController
     public function __construct(DailyTransactionProductRepository  $dailyTransactionProductRepository)
     {
         $this->dailyTransactionProduct = $dailyTransactionProductRepository;
-//        $this->middleware('jwt.auth', ['except' => []]);
+        $this->middleware('jwt.auth', ['except' => []]);
     }
 
     /**
