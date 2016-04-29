@@ -9,15 +9,17 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Http\Response;
 use JWTAuth;
+
 class UsersController extends BaseController
 {
     protected $user;
 
-    public function __construct(UserRepository  $userRepository)
+    public function __construct(UserRepository  $userRepository,Request $request)
     {
 
         $this->user = $userRepository;
         $this->currentUser = $this->getCurrentUser();
+        $this->validUserRole($request);
         $this->middleware('jwt.auth', ['except' => []]);
     }
 
@@ -49,13 +51,13 @@ class UsersController extends BaseController
      */
     public function store(Request $request)
     {
-        if (sizeof(User::$rules) > 0)
+        if (sizeof(User::$rules) > 0) {
             $this->validateRequestOrFail($request, User::$rules, User::$messages);
-
+        }
         $user  = $this->user->create($request->all());
-
         return makeResponse($user->toArray(),trans('messages.create_data'),Response::HTTP_OK);
     }
+
 
     /**
      * Display the specified resource.
@@ -66,6 +68,15 @@ class UsersController extends BaseController
     public function show($id)
     {
         $user = $this->user->find($id);
+        if(!$user){
+            return makeResponse($id,trans('messages.data_not_found'),Response::HTTP_OK);
+        }
+        if($user->role == User::USER_ROLE){
+            $user  = $this->user->with('orders')->find($id);
+        }else{
+            $user  = $this->user->with(['orders','products'])->find($id);
+        }
+
         return makeResponse($user->toArray(),trans('messages.get_data'),Response::HTTP_OK);
     }
 
@@ -89,16 +100,13 @@ class UsersController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        if (sizeof(User::$rules) > 0)
+        if (sizeof(User::rules($id)) > 0)
             $this->validateRequestOrFail($request, User::rules($id), User::$messages);
-
         $user = $this->user->apiFindOrFail($id);
-
         $user  = $this->user->updateRich($request->all(),$id);
         if($user){
             $user = $this->user->apiFindOrFail($id);
         }
-
         return makeResponse($user->toArray(),trans('messages.update_data'),Response::HTTP_OK);
     }
 
@@ -111,6 +119,6 @@ class UsersController extends BaseController
     public function destroy($id)
     {
         $user  = $this->user->delete($id);
-        return makeResponse($user->toArray(),trans('messages.delete_data'),Response::HTTP_OK);
+        return makeResponse(null,trans('messages.delete_data'),Response::HTTP_OK);
     }
 }

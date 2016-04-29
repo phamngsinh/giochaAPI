@@ -9,4 +9,5 @@ return [
     'create_data' => 'Data  created successfully',
     'update_data' => 'Data  updated  successfully',
     'delete_data' => 'Data deleted  successfully',
+    'permission_role' => 'Cannot access  method',
 ];

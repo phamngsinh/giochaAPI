@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->integer('role')->default(2);
             $table->rememberToken();
             $table->integer('created_at');
+            $table->integer('deleted_at');
             $table->integer('updated_at');
         });
     }

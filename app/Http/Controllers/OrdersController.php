@@ -38,7 +38,6 @@ class OrdersController extends BaseController
     {
 
         $order = Order::find(3);
-        return $order->dailyTransaction()->get();
         return makeResponse($this->order->all(), trans('messages.get_data'), Response::HTTP_OK);
     }
 
@@ -64,31 +63,9 @@ class OrdersController extends BaseController
      */
     public function store(Request $request)
     {
-      /*  if (sizeof(DailyTransaction::$rules) > 0) {
-            $this->validateRequestOrFail($request, DailyTransaction::$rules, DailyTransaction::$messages);
-        }
 
-        if (sizeof(DailyTransactionProduct::$rules) > 0) {
-            $this->validateRequestOrFail($request, DailyTransactionProduct::$rules, DailyTransactionProduct::$messages);
-        }*/
-        DB::beginTransaction();
-        try{
-            $product = Product::with('dailyTransactions')->get();
-            return $product;
-            DB::commit();
-        }catch (\Exception $e){
-            Log::info($e->getMessage());
-            DB::rollbacks();
-        }
-       /* $dailyTransactionRepository = $this->dailyTransactionRepository->create($request);
-        $dailyTransactionsProducts = $dailyTransactionRepository->dailyTransactionsProducts()->saveMany(
-            [
-                new DailyTransactionProduct($request),
-            ]
-        );
         $order = $this->order->create($request->all());
-
-        return makeResponse($order->toArray(), trans('messages.create_data'), Response::HTTP_OK);*/
+        return makeResponse($order->toArray(), trans('messages.create_data'), Response::HTTP_OK);
     }
 
     /**

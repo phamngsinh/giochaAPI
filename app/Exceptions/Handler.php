@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-
+use Log;
 class Handler extends ExceptionHandler
 {
     /**
@@ -45,6 +45,7 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         $msg = $e->getMessage();
+        Log::info($e->getTraceAsString());
         $tokenMessages = "";
         if ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
             $code = \Illuminate\Http\Response::HTTP_OK;

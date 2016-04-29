@@ -15,7 +15,7 @@ class ProductsController extends BaseController
     public function __construct(ProductRepository  $productRepository)
     {
         $this->product = $productRepository;
-        $this->middleware('jwt.auth', ['except' => []]);
+        $this->middleware('jwt.auth', ['except' => ['show','index']]);
     }
 
     /**
@@ -90,7 +90,6 @@ class ProductsController extends BaseController
             $this->validateRequestOrFail($request, Product::$rules, Product::$messages);
 
         $product = $this->product->apiFindOrFail($id);
-
         $product  = $this->product->updateRich($request->all(),$id);
         if($product){
             $product = $this->product->apiFindOrFail($id);

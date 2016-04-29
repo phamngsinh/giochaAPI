@@ -480,7 +480,7 @@ abstract class BaseRepository implements RepositoryInterface, CriteriaInterface
     public function find($id, $columns = array('*'))
     {
         $this->applyCriteria();
-        return $this->model->newQueryWithoutScopes()->find($id, $columns);
+        return $this->model->find($id, $columns);
     }
 
     /**
