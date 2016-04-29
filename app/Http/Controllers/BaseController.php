@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-
+use JWTAuth;
 abstract class BaseController extends Controller
 {
     protected  $currentUser ;
@@ -17,6 +17,10 @@ abstract class BaseController extends Controller
             throw new HttpException(400, json_encode($validator->errors()->getMessages()));
         }
     }
-
+    protected function getCurrentUser(){
+        $token = JWTAuth::parseToken();
+        $user = $token->toUser();
+        return $user;
+    }
 
 }

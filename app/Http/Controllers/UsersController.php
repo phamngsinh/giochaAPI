@@ -12,16 +12,13 @@ use JWTAuth;
 class UsersController extends BaseController
 {
     protected $user;
-    protected function getCurrentUser(){
-            $token = JWTAuth::parseToken();
-            $user = $token->toUser();
-            return $user;
-    }
+
     public function __construct(UserRepository  $userRepository)
     {
+
         $this->user = $userRepository;
         $this->currentUser = $this->getCurrentUser();
-//        $this->middleware('jwt.auth', ['except' => []]);
+        $this->middleware('jwt.auth', ['except' => []]);
     }
 
     /**
@@ -50,10 +47,13 @@ class UsersController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Requests\UserRequest $request)
+    public function store(Request $request)
     {
+        if (sizeof(User::$rules) > 0)
+            $this->validateRequestOrFail($request, User::$rules, User::$messages);
 
         $user  = $this->user->create($request->all());
+
         return makeResponse($user->toArray(),trans('messages.create_data'),Response::HTTP_OK);
     }
 

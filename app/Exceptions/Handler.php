@@ -1,15 +1,15 @@
 <?php
 
+
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Contracts\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
-use League\Flysystem\NotSupportedException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Log;
+
 class Handler extends ExceptionHandler
 {
     /**
@@ -18,8 +18,8 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-       // HttpException::class,
-       // ModelNotFoundException::class,
+        HttpException::class,
+        ModelNotFoundException::class,
     ];
 
     /**
@@ -32,7 +32,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
-        return parent::report($e);
+        parent::report($e);
     }
 
     /**
@@ -44,34 +44,54 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        Log::info($e->getMessage());
-        /* if ($e instanceof ModelNotFoundException) {
-             $e = new NotFoundHttpException($e->getMessage(), $e);
-         }*/
-        $code = Response::HTTP_INTERNAL_SERVER_ERROR;
-        $message = trans('messages.server_error');
-        if ($e instanceof Exception) {
-            $code = Response::HTTP_VERSION_NOT_SUPPORTED;
-            $message = trans('messages.server_error');
-        } elseif ($e instanceof ModelNotFoundException) {
-            $code = Response::HTTP_NOT_FOUND;
-            $message = trans('messages.common_data_not_found');
-        } elseif ($e instanceof NotFoundHttpException) {
-            $code = Response::HTTP_NOT_FOUND;
-            $message = trans('messages.common_data_not_found');
-        } elseif ($e instanceof \PDOException) {
-            $code = Response::HTTP_SERVICE_UNAVAILABLE;
-
-            $message = trans('messages.database_error');
+        $msg = $e->getMessage();
+        $tokenMessages = "";
+        if ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            $code = \Illuminate\Http\Response::HTTP_OK;
+        } elseif ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            $code = \Illuminate\Http\Response::HTTP_OK;
+        } elseif ($e instanceof ValidationException) {
+            $code = Response::HTTP_OK;
+        } elseif ($e instanceof TokenExpiredException) {
+            $code = $e->getStatusCode();
+            $tokenMessages = "token expired";
+            JWTAuth::refresh(JWTAuth::getToken());
+        } elseif ($e instanceof TokenInvalidException) {
+            $code = $e->getStatusCode();
+            $tokenMessages = "token invalid";
+        }else{
+           $code = \Illuminate\Http\Response::HTTP_BAD_REQUEST;
         }
-        $rs = [
+        if ($tokenMessages != '') {
+            $msg = $tokenMessages;
+        } else {
+            $tmp = json_decode($msg, true);
+
+            $rsKey = [];
+            $rsVal = [];
+            if (is_array($tmp)) {
+                foreach ($tmp AS $key => $el) {
+                    if (!in_array($key, $rsKey)) {
+                        $rsKey[] = $key;
+                    }
+                }
+            }
+            $rs = [];
+            if ($rsKey) {
+                foreach ($rsKey AS $el) {
+                    $rs[] = "{$el}: " . implode(', ', $tmp[$el]);
+                }
+            }
+            if ($rs) {
+                $msg = implode('; ', $rs);
+            }
+        }
+        return response()->json([
             'success' => false,
             'code' => $code,
-            'message' => $message,
+            'message' => str_replace(array('"', "\n"), array("'", ""), $msg ? $msg : ["API request does not found!"]),
             'data' => $request->all(),
-        ];
-
-        return response()->json($rs);
-        // return parent::render($request, $e);
+        ]);
+        //return parent::render($request, $e);
     }
 }

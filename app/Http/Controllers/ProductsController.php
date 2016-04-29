@@ -46,7 +46,8 @@ class ProductsController extends BaseController
      */
     public function store(ProductRequest $request)
     {
-
+        if (sizeof(Product::$rules) > 0)
+            $this->validateRequestOrFail($request, Product::$rules, Product::$messages);
 
         $product  = $this->product->create($request->all());
         return makeResponse($product->toArray(),trans('messages.create_data'),Response::HTTP_OK);

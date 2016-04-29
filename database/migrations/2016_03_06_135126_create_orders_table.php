@@ -19,8 +19,8 @@ class CreateOrdersTable extends Migration
             $table->integer('status');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('daily_transaction_product_id')->unsigned();
-            $table->foreign('daily_transaction_product_id')->references('id')->on('daily_transactions_products');
+            $table->integer('daily_transaction_id')->unsigned();
+            $table->foreign('daily_transaction_id')->references('id')->on('daily_transactions');
             $table->integer('created_at');
             $table->integer('updated_at');
         });

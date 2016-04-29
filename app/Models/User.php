@@ -8,25 +8,26 @@ use Illuminate\Support\Facades\Hash;
 class User extends \App\User
 {
 
-    protected $fillable = ['name', 'email', 'password','first_name','last_name'];
+    protected $fillable = ['name', 'email', 'password', 'role'];
 
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
-
+    protected $dates = ['created_at', 'updated_at'];
     public static $rules = [
         "email" => "required|email|unique:users,email,:id",
         "password" => "min:6",
-        "firstName" => "required",
-        "lastName" => "required",
+        "name" => "required|min:3",
+        "role" => "required|numeric",
     ];
     public static $messages = [
         'unique' => 'The :attribute has already existed',
         'required' => 'The :attribute is required',
         'email' => 'Please enter a valid email  address',
     ];
+
     public static function rules($id = false)
     {
         $rules = self::$rules;
@@ -38,14 +39,24 @@ class User extends \App\User
         return $rules;
     }
 
-    public function products(){
-        $this->hasMany('App\Models\Product','creator','id');
+    const ADMIN_ROLE = 1;
+    const USER_ROLE = 2;
+
+
+    public function products()
+    {
+        $this->hasMany('App\Models\Product', 'creator', 'id');
     }
-    public function orders(){
-        $this->hasMany('App\Models\Order','user_id','id');
+
+    public function orders()
+    {
+        $this->hasMany('App\Models\Order', 'user_id', 'id');
     }
-    public function setPasswordAttribute($pass){
+
+    public function setPasswordAttribute($pass)
+    {
         $this->attributes['password'] = Hash::make($pass);
     }
+
 
 }
