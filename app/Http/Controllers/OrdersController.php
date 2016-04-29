@@ -13,6 +13,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Log;
 
 class OrdersController extends BaseController
@@ -24,6 +25,7 @@ class OrdersController extends BaseController
         OrderRepository $orderRepository,
         DailyTransactionRepository $dailyTransactionRepositoryRepository
     ) {
+
         $this->order = $orderRepository;
         $this->dailyTransactionRepository = $dailyTransactionRepositoryRepository;
         $this->middleware('jwt.auth', ['except' => []]);
@@ -36,19 +38,9 @@ class OrdersController extends BaseController
      */
     public function index()
     {
+
         return makeResponse($this->order->all(), trans('messages.get_data'), Response::HTTP_OK);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
-    }
-
     /**
      * Store a newly created resource in storage.
      * [
@@ -56,14 +48,23 @@ class OrdersController extends BaseController
      * 'product_id'=>1,
      * 'user_id'=>2,
      * ];
+     * //create order for user is on today
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-
-        $order = $this->order->create($request->all());
-        return makeResponse($order->toArray(), trans('messages.create_data'), Response::HTTP_OK);
+        if (sizeof(Order::$rules) > 0)
+            $this->validateRequestOrFail($request, Order::$rules, Order::$messages);
+        $transactionToday = $this->dailyTransactionRepository->getTransactionTime();
+        if(!$transactionToday){
+            $transactionToday = $this->dailyTransactionRepository->create(['transaction_time'=>Carbon::now()->addDay()]);
+        }
+        $request = $request->all();
+        $transactionToday->products()->attach($request['product_id'],['quantity'=>$request['quantity']]);
+        $order = new Order($request);
+        $transactionToday->orders()->save($order);
+        return makeResponse($transactionToday->with(['orders','products'])->first(), trans('messages.create_data'), Response::HTTP_OK);
     }
 
     /**
@@ -75,20 +76,9 @@ class OrdersController extends BaseController
     public function show($id)
     {
         $order = $this->order->find($id);
-
         return makeResponse($order->toArray(), trans('messages.get_data'), Response::HTTP_OK);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.

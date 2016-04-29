@@ -22,6 +22,7 @@ class CreateOrdersTable extends Migration
             $table->integer('daily_transaction_id')->unsigned();
             $table->foreign('daily_transaction_id')->references('id')->on('daily_transactions');
             $table->integer('created_at');
+            $table->float('total');
             $table->integer('updated_at');
         });
         \Illuminate\Support\Facades\DB::statement('set foreign_key_checks=1');

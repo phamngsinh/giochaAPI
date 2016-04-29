@@ -22,11 +22,11 @@ class CreateProductsTable extends Migration
             $table->integer('creator')->unsigned();
             $table->foreign('creator')->references('id')->on('users');
             $table->integer('created_at');
+            $table->integer('quantity');
             $table->integer('updated_at');
         });
         \Illuminate\Support\Facades\DB::statement('set foreign_key_checks=1');
 
-        \Illuminate\Support\Facades\DB::statement('set foreign_key_checks=1');
 
 
     }
