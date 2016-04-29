@@ -75,7 +75,8 @@ class OrdersController extends BaseController
      */
     public function show($id)
     {
-        $order = $this->order->find($id);
+        $order = $this->order->apiFindOrFail($id);
+        $order = $order->with(['dailyTransactions','users'])->toSql();
         return makeResponse($order->toArray(), trans('messages.get_data'), Response::HTTP_OK);
     }
 

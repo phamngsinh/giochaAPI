@@ -50,14 +50,14 @@ class Order extends BaseModels
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function dailyTransactions(){
-        return $this->belongsTo('App\Models\DailyTransaction','daily_transaction_d','id');
+        return $this->belongsTo('App\Models\DailyTransaction','daily_transaction_d');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function users(){
-        return $this->belongsTo('App\Models\User','user_id','id');
+        return $this->belongsTo('App\Models\User','user_id');
     }
 
 }

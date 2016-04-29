@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50549
 File Encoding         : 65001
 
-Date: 2016-04-29 09:32:59
+Date: 2016-04-29 18:22:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,11 +25,12 @@ CREATE TABLE `daily_transactions` (
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of daily_transactions
 -- ----------------------------
+INSERT INTO `daily_transactions` VALUES ('3', '1462010060', '1461923660', '1461923660');
 
 -- ----------------------------
 -- Table structure for daily_transactions_products
@@ -41,16 +42,23 @@ CREATE TABLE `daily_transactions_products` (
   `daily_transaction_id` int(10) unsigned NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `daily_transactions_products_product_id_foreign` (`product_id`),
   KEY `daily_transactions_products_daily_transaction_id_foreign` (`daily_transaction_id`),
   CONSTRAINT `daily_transactions_products_daily_transaction_id_foreign` FOREIGN KEY (`daily_transaction_id`) REFERENCES `daily_transactions` (`id`),
   CONSTRAINT `daily_transactions_products_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of daily_transactions_products
 -- ----------------------------
+INSERT INTO `daily_transactions_products` VALUES ('5', '1', '3', '0', '0', '1');
+INSERT INTO `daily_transactions_products` VALUES ('6', '1', '3', '0', '0', '1');
+INSERT INTO `daily_transactions_products` VALUES ('7', '1', '3', '0', '0', '1');
+INSERT INTO `daily_transactions_products` VALUES ('8', '1', '3', '0', '0', '1');
+INSERT INTO `daily_transactions_products` VALUES ('9', '1', '3', '0', '0', '12');
+INSERT INTO `daily_transactions_products` VALUES ('10', '1', '3', '0', '0', '12');
 
 -- ----------------------------
 -- Table structure for migrations
@@ -83,16 +91,18 @@ CREATE TABLE `orders` (
   `daily_transaction_id` int(10) unsigned NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
+  `total` int(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `orders_user_id_foreign` (`user_id`),
   KEY `orders_daily_transaction_id_foreign` (`daily_transaction_id`),
   CONSTRAINT `orders_daily_transaction_id_foreign` FOREIGN KEY (`daily_transaction_id`) REFERENCES `daily_transactions` (`id`),
   CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of orders
 -- ----------------------------
+INSERT INTO `orders` VALUES ('8', 'Note Example', '2', '2', '3', '1461924361', '1461924361', null);
 
 -- ----------------------------
 -- Table structure for password_resets
@@ -122,6 +132,7 @@ CREATE TABLE `products` (
   `creator` int(10) unsigned NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `products_creator_foreign` (`creator`),
   CONSTRAINT `products_creator_foreign` FOREIGN KEY (`creator`) REFERENCES `users` (`id`)
@@ -130,8 +141,8 @@ CREATE TABLE `products` (
 -- ----------------------------
 -- Records of products
 -- ----------------------------
-INSERT INTO `products` VALUES ('1', 'Giò chả', '10.5', 'Giò chả không phụ gia', '1', '1461801430', '1461801430');
-INSERT INTO `products` VALUES ('2', 'Bánh ', '12.5', 'Bánh mỳ kẹp giò ', '1', '1461801430', '1461801430');
+INSERT INTO `products` VALUES ('1', 'gio cha', '20', 'Giò chả không phụ gia', '6', '1461801430', '1461918178', null);
+INSERT INTO `products` VALUES ('2', 'Bánh ', '12.5', 'Bánh mỳ kẹp giò ', '6', '1461801430', '1461801430', null);
 
 -- ----------------------------
 -- Table structure for users
@@ -146,15 +157,18 @@ CREATE TABLE `users` (
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   `role` tinyint(4) DEFAULT '2',
+  `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('1', 'Dean Chenkie', 'dean@gmail.com', '$2y$10$JaXwQit06Uu9jvWAzUuJPua.crAom2dH8sKVcDZ6CLLQgt0rDi7iG', null, '1461801430', '1461801430', '2');
-INSERT INTO `users` VALUES ('2', 'Sean Parker', 'sean@gmail.com', '$2y$10$AjedtT1eRIt9kgRh2DfpkuzScCg0Cszv4/OmZES6z/VIB4Pa/WyVO', null, '1461801430', '1461801430', '2');
-INSERT INTO `users` VALUES ('3', 'Ken Jake', 'ken@gmail.com', '$2y$10$W.9nTVEYhuSdhQ6YoKYBq.1t.SaCZPOpJUTInzllN5Wo/kJSxqFJ6', null, '1461801430', '1461801430', '2');
-INSERT INTO `users` VALUES ('4', 'Andrew Ho', 'andrew@gmail.com', '$2y$10$PagG5gST/rh6tzupRDGWOOW7W8vV.h61ewAFCCHiJGDDE7C2k3A2S', null, '1461801430', '1461801430', '2');
-INSERT INTO `users` VALUES ('5', 'Steve Nguyen ', 'steve@gmail.com', '$2y$10$WozSttgA8PrdqHGHcGmPDOsbCOzVc095pGNw2/uPAoQwUMtslxt7G', null, '1461801430', '1461801430', '2');
+INSERT INTO `users` VALUES ('1', 'Dean Chenkie', 'dean@gmail.com', '$2y$10$JaXwQit06Uu9jvWAzUuJPua.crAom2dH8sKVcDZ6CLLQgt0rDi7iG', null, '1461801430', '1461801430', '2', null);
+INSERT INTO `users` VALUES ('2', 'user name', 'sean@gmail.com', '$2y$10$AjedtT1eRIt9kgRh2DfpkuzScCg0Cszv4/OmZES6z/VIB4Pa/WyVO', null, '1461801430', '1461908922', '2', null);
+INSERT INTO `users` VALUES ('3', 'Ken Jake', 'ken@gmail.com', '$2y$10$W.9nTVEYhuSdhQ6YoKYBq.1t.SaCZPOpJUTInzllN5Wo/kJSxqFJ6', null, '1461801430', '1461801430', '2', null);
+INSERT INTO `users` VALUES ('4', 'Andrew Ho', 'andrew@gmail.com', '$2y$10$PagG5gST/rh6tzupRDGWOOW7W8vV.h61ewAFCCHiJGDDE7C2k3A2S', null, '1461801430', '1461801430', '2', null);
+INSERT INTO `users` VALUES ('5', 'Steve Nguyen ', 'steve@gmail.com', '$2y$10$WozSttgA8PrdqHGHcGmPDOsbCOzVc095pGNw2/uPAoQwUMtslxt7G', null, '1461801430', '1461801430', '2', null);
+INSERT INTO `users` VALUES ('6', 'Sinh Pham', 'smagic39@gmail.com', '$2y$10$KuuxwSNMSlYL9tKBoiNKLOyL3hVuWeqInOutEECcCa9CKg9gT2zny', null, '1461898057', '1461898057', '1', null);
+INSERT INTO `users` VALUES ('7', 'user tset', 'user@gmail.com', '$2y$10$QCdmut8uqs9CAJqRKMZvYu1FRpo6TQtQFliRUlSjm33O6P2FRJwnG', null, '1461899159', '1461899159', '2', null);

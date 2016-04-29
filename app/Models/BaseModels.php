@@ -18,7 +18,7 @@ class BaseModels extends  Model
         'required' => 'The :attribute is required',
     ];
     public static $snakeAttributes = false;
-    public function getAttribute($key) {
+   /* public function getAttribute($key) {
         if (array_key_exists($key, $this->relations)) {
             return parent::getAttribute($key);
         } else {
@@ -27,12 +27,12 @@ class BaseModels extends  Model
     }
     public function setAttribute($key, $value) {
         return parent::setAttribute(snake_case($key), $value);
-    }
+    }*/
 
-    public function toArray() {
+   /* public function toArray() {
         $rs = array_camel_case(parent::toArray(), false);
         return $rs;
-    }
+    }*/
     protected $dates = [
         "created_at",
         "updated_at",
