@@ -27,25 +27,15 @@ class ProductsController extends BaseController
     {
         return makeResponse($this->product->all(),trans('messages.get_data'),Response::HTTP_OK);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
-    }
-
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductRequest $request)
+    public function store(Request $request)
     {
+        $this->validUserRole($request);
         if (sizeof(Product::$rules) > 0)
             $this->validateRequestOrFail($request, Product::$rules, Product::$messages);
 
@@ -66,17 +56,6 @@ class ProductsController extends BaseController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -85,14 +64,14 @@ class ProductsController extends BaseController
      */
     public function update(Request $request, $id)
     {
-
+        $this->validUserRole($request);
         if (sizeof(Product::$rules) > 0)
             $this->validateRequestOrFail($request, Product::$rules, Product::$messages);
 
         $product = $this->product->apiFindOrFail($id);
         $product  = $this->product->updateRich($request->all(),$id);
         if($product){
-            $product = $this->product->apiFindOrFail($id);
+            $product = $this->product->with('creator')->find($id);
         }
 
         return makeResponse($product->toArray(),trans('messages.update_data'),Response::HTTP_OK);
@@ -104,9 +83,11 @@ class ProductsController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id,Request $request)
     {
+
+        $this->validUserRole($request);
         $product  = $this->product->delete($id);
-        return makeResponse($product->toArray(),trans('messages.delete_data'),Response::HTTP_OK);
+        return makeResponse(true,trans('messages.delete_data'),Response::HTTP_OK);
     }
 }

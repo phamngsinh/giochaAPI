@@ -36,8 +36,6 @@ class OrdersController extends BaseController
      */
     public function index()
     {
-
-        $order = Order::find(3);
         return makeResponse($this->order->all(), trans('messages.get_data'), Response::HTTP_OK);
     }
 

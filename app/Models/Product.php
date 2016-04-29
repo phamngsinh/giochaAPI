@@ -43,7 +43,7 @@ class Product extends BaseModels
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(){
+    public function creator(){
         return $this->belongsTo('App\Models\User','creator','id');
     }
 

@@ -22,5 +22,8 @@ class Order extends BaseModels
     public function dailyTransactions(){
         return $this->belongsTo('App\Models\DailyTransaction','daily_transaction_d','id');
     }
+    public function users(){
+        return $this->belongsTo('App\Models\User','user_id','id');
+    }
 
 }
