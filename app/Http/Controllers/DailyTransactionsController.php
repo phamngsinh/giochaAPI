@@ -25,7 +25,8 @@ class DailyTransactionsController extends BaseController
      */
     public function index()
     {
-        return makeResponse($this->dailyTransactionRepository->with(['products','orders'])->get(),trans('messages.dailyTransactionRepository_get'),Response::HTTP_OK);
+        return makeResponse($this->dailyTransactionRepository->with(['products','orders'])->orderBy('transaction_time')->get(),trans
+        ('messages.dailyTransactionRepository_get'),Response::HTTP_OK);
     }
 
     /**
