@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Repository\DailyTransactionRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Log;
 
 class DailyTransactionsController extends BaseController
 {
@@ -25,8 +27,12 @@ class DailyTransactionsController extends BaseController
      */
     public function index()
     {
-        return makeResponse($this->dailyTransactionRepository->with(['products','orders'])->orderBy('transaction_time')->get(),trans
-        ('messages.dailyTransactionRepository_get'),Response::HTTP_OK);
+        $models = $this->dailyTransactionRepository->with(['orders']) ->orderBy('transaction_time')->get();
+        foreach ($models as &$model){
+            $date = convert_time_u_to_carbon($model->transaction_time);
+            $model->month = $date->format('F');
+        }
+        return makeResponse($models,trans ('messages.dailyTransactionRepository_get'),Response::HTTP_OK);
     }
 
     /**

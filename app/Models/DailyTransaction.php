@@ -30,6 +30,9 @@ class DailyTransaction extends BaseModels
      * @var array
      */
     protected $dates = ['transaction_time','created_at','updated_at'];
+    protected $casts = [
+        'transaction_time' => 'integer'
+    ];
     /**
      * @var array
      */

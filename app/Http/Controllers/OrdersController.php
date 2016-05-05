@@ -39,7 +39,8 @@ class OrdersController extends BaseController
     public function index()
     {
 
-        return makeResponse($this->order->with(['dailyTransactions','users'])->get(), trans('messages.get_data'), Response::HTTP_OK);
+        $models = $this->order->with(['users', 'dailyTransactions','dailyTransactions.products'])->get();
+        return makeResponse($models, trans('messages.get_data'), Response::HTTP_OK);
     }
     /**
      * Store a newly created resource in storage.
